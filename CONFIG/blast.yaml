@@ -1,0 +1,44 @@
+seq: /Users/zhouran/books/annotation/All_Combination.Trinity.fasta
+#soft
+blast_parser: /bin/blast_parser.pl
+kog_parser1: /bin/kog_parser.pl
+kog_parser2: /bin/KogFunClassDrawer.pl
+cog_parser1: /bin/cog_parser.pl
+cog_parser2: /bin/CogFunClassDrawer.pl
+kegg_parser: /bin/kegg_tab2path_ko.pl
+
+###which database will be run###
+runinfo:
+ - nr
+# - nt
+# - Kog
+# - Cog
+# - Kegg
+ - TrEMBL
+####running detail####
+run_detail:
+ nr: nr.blast.xml
+ swissprot: swiss_port.blast.xml
+ nt: nt.blast
+ TrEMBL: TrEMBL.blast
+ Kog: Kog.blast
+ Cog: Cog.blast
+ Kegg: Kegg.blast
+praser_detail:
+ Kog: blast_results/Kog.cluster.svg
+ Cog: blast_results/Cog.cluster.svg
+ Kegg: best_praser.kegg
+
+evalue: 1e-5
+thread: 2
+blast_type: blastp
+
+#######database#######
+database:
+ nr_path: database/nr
+ nt_path: database/nt
+ swissport_path: database/swissport
+ TrEMBL_path: database/TrEMBL
+ cog_path: database/cog
+ kog_path: database/kog
+ kegg_path: database/kegg

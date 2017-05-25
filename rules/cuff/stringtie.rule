@@ -1,0 +1,31 @@
+rule stringtie:
+	input: hisat2_path + "{sample}.sort.bam"
+	output:stringtie_path + "{sample}.gtf"
+	shell:
+		"stringtie -p {thread} -G {gtf} -o {output} {input}"
+
+rule mergelist:
+    input: expand(stringtie_path + "{sample}.gtf", sample=Sample)
+    output:stringtie_path + "mergelist.txt"
+    run:
+         OUT = open(output[0],'w')
+         OUT.write('\n'.join(input))
+         OUT.close() 
+
+rule strintie_merged:
+    input: stringtiepath + "mergelist.txt"
+    output:stringtiepath + "merge.gtf"
+    shell:
+        "stringtie --merge -p {thread} -G {gtf} -o {output} {input}"
+
+rule stringtie_for_Ballgown:
+    input: stringtiepath + "merge.gtf",hisat2_path + "{sample}.sort.bam"
+    output:ballgownpath  + "{sample}/{sample}.gtf"
+    shell:
+        "stringtie -e -B -p {thread} -G {input[0]} -o {output} {input[1]}"
+        
+rule gffcompare:
+    input:  stringtiepath + "merge.gtf"
+    output: gffcomparepath+ "merged.annotated.gtf"
+    shell:
+        "gffcompare -r {gtf} -o {gffcompare_path}/merged {input}"

@@ -1,0 +1,9 @@
+rule hisat2:
+    input: tri_path + "{sample}Read1.paired.fq",tri_path + "{sample}Read2.paired.fq"
+    log:   hisat2path + "{sample}.hisat2.log"
+    output:hisat2path + "{sample}.bam"
+    shell: 
+        "{HISAT2} -x {INDEX} -p {THREAD} --min-intronlen {Min_intron} \
+        --max-intronlen {Max_intron} --dta {Hisat2_splicesite} \
+			{Strand_specific} --time -1 {input[0]} -2 {input[1]}  2> {log} | \
+			{samtools} sort -@ {THREAD} -O bam -o {output}  && {samtools} index {output}.bai"

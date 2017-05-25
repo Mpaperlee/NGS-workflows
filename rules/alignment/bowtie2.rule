@@ -1,0 +1,5 @@
+rule alignment:
+    input:SAMPLEPATH + '/{sample}.fq'
+    output:'data/alignment/{sample}.bam'
+    shell:
+        "{BOWTIE2} -p {THREAD} --local -x {INDEX} -U {input}|{SAMTOOLS} sort @ {THREAD} -O bam -o {output}"

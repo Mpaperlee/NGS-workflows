@@ -1,0 +1,40 @@
+#sample
+datapath: 
+ samplepath: /home/jiajinbu/nas3/zhouran/proj/10-24-Pi-potato/raw_data
+ gtfpath: /home/jiajinbu/bu/data/genome/Solanum_tuberosum_potato/2014/hisat2/genome.gtf
+ genomepath: /home/jiajinbu/bu/data/genome/Solanum_tuberosum_potato/2014/potato_dm_v404_all_pm_un.fasta
+ indexpath: /home/jiajinbu/bu/data/genome/Solanum_tuberosum_potato/2014/hisat2/potato
+#soft
+trimmomatic: /home/jiajinbu/bu/soft/bio/trimmomatic/Trimmomatic-0.36/trimmomatic-0.36.jar
+trans_cds: /home/jiajinbu/bu/soft/bio/transdecoder/TransDecoder-3.0.0/util/cufflinks_gtf_genome_to_cdna_fasta.pl
+trans_gff3: /home/jiajinbu/bu/soft/bio/transdecoder/TransDecoder-3.0.0/util/cufflinks_gtf_to_alignment_gff3.pl
+outputpath:
+ trimmomatic: data/trimmomatic/
+ hisat2: data/hisat2/
+ stringtie: data/stringtie/
+ cuffquant: data/cuffquant/
+ cuffdiff: data/cuffdiff/
+ gffcompare: data/gffcompare/
+ ballgown: data/ballgown/
+ transdecoder: data/transdecoder/
+#hisat2
+Min_intron: 20
+Max_intron: 10000
+Strand_specific: "\u0020"
+#or --rna-strandness FR
+thread: 8
+Hisat2_splicesite: "\u0020"
+#if there is a splicesite file in index,so it's blank [--known-splicesite-infile yourfile]
+
+cuff_lib_type: "\u0020"
+#--library-type fr-secondstrand
+
+sample:
+ - A1
+ - F4
+ - P3
+ - Pa
+ - Pc
+ - Pd
+ - Pt13
+ - Pt

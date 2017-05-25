@@ -1,0 +1,24 @@
+CHIPSEQ:
+ INPUT:
+ 
+DATAPATH:
+ SAMPLEPATH: /home/jiajinbu/nas3/zhouran/data/SeqData/ChipSeq
+ GTF: /home/jiajinbu/nas3/zhouran/data/Genome/mm10/mm10.gtf
+ GENOME: /home/jiajinbu/nas3/zhouran/data/Genome/mm10/mm10.genome
+ INDEX: /home/jiajinbu/nas3/zhouran/data/Genome/mm10/bowtie/mm10
+sample:
+ - IgG
+ - IgGold
+ - RYBP
+ - cbx7
+ - ring1B
+ - suz12
+THREAD: 8
+SOFT:
+ bowtie2: bowtie2
+ macs: /home/jiajinbu/nas3/zhouran/miniconda2/bin/macs2
+ samtools: /home/jiajinbu/nas3/bu/soft/bio/samtools/current/bin/samtools
+ bamcoverage: /home/jiajinbu/nas3/zhouran/miniconda2/bin/bamCoverage
+ computeMatrix: /home/jiajinbu/nas3/zhouran/miniconda2/bin/computeMatrix
+ plotHeatmap: /home/jiajinbu/nas3/zhouran/miniconda2/bin/plotHeatmap
+ plotProfile: /home/jiajinbu/nas3/zhouran/miniconda2/bin/plotProfile

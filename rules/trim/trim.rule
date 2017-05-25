@@ -1,0 +1,7 @@
+rule trim:
+    input:SAMPLEPATH + "/{sample}Read1.fq", SAMPLEPATH + "/{sample}Read2.fq"
+    params:TRIMPATH + "{sample}Read1.unpaired.fq",TRIMPATH + "{sample}Read1.unpaired.fq"
+    output:TRIMPATH + "{sample}Read1.paired.fq",TRIMPATH + "{sample}Read2.paired.fq"
+    shell:
+        "java -jar {TRIMMOMATIC} PE -threads 4 -phred33 {input[0]} {input[1]} {output[0]} {params[0]} {output[1]} {params[1]} \
+        ILLUMINACLIP:/home/jiajinbu/bu/soft/bio/trimmomatic/Trimmomatic-0.36/adapters/TruSeq3-PE.fa:2:30:10 LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MINLEN:36"

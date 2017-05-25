@@ -1,0 +1,14 @@
+rule cuffquant:
+    input:stringtiepath + "merge.gtf", hisat2_path + "{sample}.sort.bam"
+    params:cuffquantpath + "{sample}"
+    output:cuffquantpath + "{sample}/abundances.cxb"
+    shell:
+        "{CUFFQUANT} -o {params} -p {thread} -b {genome} {cuff_lib_type} -u {input[0]} {input[1]} "
+
+rule cuffdif:
+    input:expand(cuffquantpath + "{sample}/abundances.cxb",sample=Sample) , expand("{lables}",lables=LABLES_string)
+    params:cuffdiffpath , stringtiepath + "merge.gtf"
+    output:cuffdiffpath + "gene_exp.diff"
+    shell:
+        "{CUFFDIFF} -L {sample} -o {params[0]} -p {thread} -b {genome} -u {params[1]} \
+        {cuff_lib_type} {input[1]}"

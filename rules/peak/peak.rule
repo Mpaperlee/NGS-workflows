@@ -1,0 +1,5 @@
+rule call_peak:
+	input:alignment + '/{sample}.bam'
+	output:''
+	shell:
+		""
