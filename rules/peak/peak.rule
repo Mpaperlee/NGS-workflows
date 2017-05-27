@@ -1,5 +1,6 @@
-rule call_peak:
-	input:alignment + '/{sample}.bam'
-	output:''
-	shell:
-		""
+rule peaks:
+    input:alignment + '/{sample}.bam',lambda wildcards: alignment + '/' + INPUTINFO[wildcards.sample] + '.bam'
+    output:macs2 + '/{sample}/{sample}.macs2.log'
+    params:'{sample}'
+    shell:
+        "{MACS2} -c {input[1]} -t {input[0]} -m 10 30 -p 1e-5 -f BAM -g mm -n {params} 2>{output}"

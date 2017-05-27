@@ -1,5 +1,6 @@
 rule alignment:
     input:SAMPLEPATH + '/{sample}.fq'
     output:'data/alignment/{sample}.bam'
+    params:'data/alignment/{sample}.log'
     shell:
-        "{BOWTIE2} -p {THREAD} --local -x {INDEX} -U {input}|{SAMTOOLS} sort @ {THREAD} -O bam -o {output}"
+        "{BOWTIE2} -p {THREAD} -3 5 --local -x {INDEX} -U {input}2>{params}|{SAMTOOLS} sort -@ {THREAD} -O bam -o {output}"

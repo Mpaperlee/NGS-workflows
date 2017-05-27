@@ -1,0 +1,58 @@
+rule buildindex:
+    input:alignment + '/{sample}.bam'
+    output:alignment + '/{sample}.bam.bai'
+    shell:
+        "{SAMTOOLS} index {input}"
+rule bamCoverage:
+    input:alignment + '/{sample}.bam',alignment + '/{sample}.bam.bai'
+    output:macs2 + '/{sample}/{sample}.bw'
+    params:'--normalizeUsingRPKM'
+    shell:
+        "{BAMCOVERAGE} -b {input[0]} -o {output} {params} -p {THREAD}"
+rule computeMatrix:
+    input:macs2 + '/{sample}/{sample}.bw'
+    output:macs2 + '/{sample}/matrix1_{sample}_TSS.gz', macs2 + '/{sample}/regions1_{sample}_genes.bed'
+    shell:
+        "{COMPUTEMATRIX} reference-point -p {THREAD} --referencePoint TSS -b 10000 -a 10000 \
+        -R {REFSEQ} -S {input} --skipZeros -o {output[0]} --outFileSortedRegions {output[1]}"
+
+rule plotHEATMAP:
+    input:macs2 + '/{sample}/matrix1_{sample}_TSS.gz'
+    output:macs2 + '/{sample}/{sample}.png'
+    shell:
+        "{PLOTHEATMAP} -m {input} -out {output}"
+
+rule computALL_reference:
+    input:expand(macs2 + '/{sample}/{sample}.bw',sample = ALLSAMPLE)
+    output:macs2 + '/ref.merge.gz'
+    shell:
+        "{COMPUTEMATRIX} reference-point -p {THREAD} --referencePoint TSS -b 2000 -a 2000 \
+        -R {REFSEQ} -S {input} --skipZeros -o {output} "
+rule plotprofile_reference:
+    input:macs2 + '/ref.merge.gz'
+    output:macs2 + '/ref.profile.pdf'
+    shell:
+        "{PLOTPROFILE} --dpi 720 -m {input} -out {output} --plotFileFormat pdf --perGroup"
+rule plotHEATMAP_reference:
+    input:macs2 + '/ref.merge.gz'
+    output:macs2 + '/ref.heatmap.pdf'
+    shell:
+        "{PLOTHEATMAP} --dpi 720 -m {input} -out {output} --plotFileFormat pdf"
+        
+        
+rule computALL_scale_regoin:
+    input:expand(macs2 + '/{sample}/{sample}.bw',sample = ALLSAMPLE)
+    output:macs2 + '/scale_region.merge.gz'
+    shell:
+        "{COMPUTEMATRIX} scale-regions -p {THREAD} -b 3000 -a 3000 -m 5000 \
+        -R {REFSEQ} -S {input} --skipZeros -o {output} "
+rule plotprofile_scale_regoin:
+    input:macs2 + '/scale_region.merge.gz'
+    output:macs2 + '/scale_region.profile.pdf'
+    shell:
+        "{PLOTPROFILE} --dpi 720 -m {input} -out {output} --plotFileFormat pdf --perGroup"
+rule plotHEATMAP_scale_regoin:
+    input:macs2 + '/scale_region.merge.gz'
+    output:macs2 + '/scale_region.heatmap.pdf'
+    shell:
+        "{PLOTHEATMAP} --dpi 720 -m {input} -out {output} --plotFileFormat pdf" 
