@@ -1,14 +1,36 @@
-rule cuffquant:
-    input:stringtiepath + "merge.gtf", hisat2_path + "{sample}.sort.bam"
-    params:cuffquantpath + "{sample}"
-    output:cuffquantpath + "{sample}/abundances.cxb"
+rule cufflinks:
+    input:tophat_path + "{sample}/accepted_hits.bam"
+    output:cufflinkspath + "transcripts.gtf"
+    threads:thread_cuf
+    params:cufflinkspath
     shell:
-        "{CUFFQUANT} -o {params} -p {thread} -b {genome} {cuff_lib_type} -u {input[0]} {input[1]} "
+        "cufflinks -o {params[0]} -p {threads} -g {GTF} --library-type {Strand_specific} -u {input}"
+rule filter_the_gtf:
+    input:cufflinkspath + "transcripts.gtf"
+    output:cufflinkspath + "filter.gtf"
+    params:cufflinkspath + 'isoforms.fpkm_tracking'
+    shell:
+        "python {cufflinks_filter} -g {input} -i {params}"
+#rule cuffquant:
+#    input:stringtiepath + "merge.gtf", hisat2_path + "{sample}.sort.bam"
+#    params:cuffquantpath + "{sample}"
+#    output:cuffquantpath + "{sample}/abundances.cxb"
+#    threads:thread_cuf
+#    shell:
+#        "{CUFFQUANT} -o {params} -p {threads} -b {genome} {cuff_lib_type} -u {input[0]} {input[1]} "
+rule mergegtf:
+    input:'GTF_list.txt'
+    output:cuffmergepath + 'merged.gtf'
+    params:'bwt/cuffmerge'
+    threads:
+    shell:
+        "cuffmerge -o {params} -g {GTF} -p {threads} GTF_list.txt"
 
-rule cuffdif:
-    input:expand(cuffquantpath + "{sample}/abundances.cxb",sample=Sample) , expand("{lables}",lables=LABLES_string)
-    params:cuffdiffpath , stringtiepath + "merge.gtf"
-    output:cuffdiffpath + "gene_exp.diff"
+###generate this in the snakefiles
+rule cuffdiff:
+    input:cuffmergepath + 'merged.gtf'
+    output:cuffdiffpath + 'run.info'
+    params:cuffdiffpath,expand('{samplelable}',samplelable=SAMPLELABLE)
+    threads:thread_cuf
     shell:
-        "{CUFFDIFF} -L {sample} -o {params[0]} -p {thread} -b {genome} -u {params[1]} \
-        {cuff_lib_type} {input[1]}"
+        "cuffdiff --library-type fr-firststrand -o {params[0]} -p {threads} {input} -L {lable} {params[1]}"

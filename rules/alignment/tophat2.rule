@@ -1,0 +1,7 @@
+rule tophat2:
+	input:tri_path + "{sample}Read1.paired.fq",tri_path + "{sample}Read2.paired.fq"
+	output:tophat_path + "{sample}/accepted_hits.bam"
+	params:tophat_path + '{sample}'
+	threads:thread_top
+	shell:
+		"tophat2 -p {threads} -G {gtf} --library-type {Strand_specific} -o {params} {bowtie2_index} {input[0]} {input[1]}"

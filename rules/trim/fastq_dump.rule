@@ -1,0 +1,5 @@
+rule fastq_dump:
+    input:'{filename}'
+    output:'{filename}_1.fastq.gz','{filename}_2.fastq.gz'
+    shell:
+        "fastq-dump --split-files --gzip -O tuber/  {input}"
